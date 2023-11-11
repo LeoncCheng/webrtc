@@ -15,6 +15,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
+console.log("server start and listen on ", Number(process.argv[2]));
+
 app.get('/sender', function(req, res) {
   res.render('sender', {'localId':0});
 });
@@ -31,6 +33,7 @@ function client(socket) {
 pending_msgs = {};
 
 io.on('connection', function(socket) {
+  console.log("reciver conncet");
   socket.on('id', function(id) {
     sockets[id] = socket;
 
@@ -44,6 +47,8 @@ io.on('connection', function(socket) {
   });
 
   socket.on('msg', function(data) {
+    console.log("recv msg", data);
+
     if (data.to in sockets) {
       sockets[data.to].emit('msg', data);
     } else {
